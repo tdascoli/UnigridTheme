@@ -1,8 +1,11 @@
 package com.unigrid.demo
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -26,9 +30,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.unigrid.theme.UgBlack
 import com.unigrid.theme.UgDarkGray
 import com.unigrid.theme.UgMediumGray
@@ -36,7 +42,6 @@ import com.unigrid.theme.UgRed
 import com.unigrid.theme.UgWhite
 import com.unigrid.theme.UnigridTheme
 import com.unigrid.theme.components.UnigridNavBar
-import com.unigrid.theme.components.UnigridNavItem
 
 enum class DemoScreen(val label: String) {
     Home("Home"),
@@ -71,49 +76,115 @@ private fun CompactLayout(
     currentScreen: DemoScreen,
     onScreenSelected: (DemoScreen) -> Unit,
 ) {
-    Column(Modifier.fillMaxSize()) {
-        // Top NavBar — black background extends behind status bar
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(UgBlack)
-                .windowInsetsPadding(WindowInsets.statusBars),
-        ) {
-            UnigridNavBar(
-                dark = true,
-                brand = {
-                    Text(
-                        text = "UNIGRID",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Black,
-                        color = UgWhite,
-                    )
-                },
+    var drawerOpen by remember { mutableStateOf(false) }
+
+    Box(Modifier.fillMaxSize()) {
+        // Main content
+        Column(Modifier.fillMaxSize()) {
+            // Top NavBar with hamburger + brand
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(UgBlack)
+                    .windowInsetsPadding(WindowInsets.statusBars),
             ) {
-                Row(
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                ) {
-                    DemoScreen.entries.forEach { screen ->
-                        UnigridNavItem(
-                            text = screen.label,
-                            onClick = { onScreenSelected(screen) },
-                            selected = screen == currentScreen,
-                            dark = true,
+                UnigridNavBar(
+                    dark = true,
+                    brand = {
+                        // Hamburger button
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clickable { drawerOpen = !drawerOpen },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = if (drawerOpen) "\u2715" else "\u2630",
+                                color = UgWhite,
+                                fontSize = 22.sp,
+                            )
+                        }
+                        Text(
+                            text = "UNIGRID",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Black,
+                            color = UgWhite,
                         )
-                    }
-                }
+                    },
+                ) {}
+            }
+
+            // Content
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .windowInsetsPadding(WindowInsets.navigationBars),
+            ) {
+                ScreenContent(currentScreen)
             }
         }
 
-        // Content — respects navigation bar insets
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(WindowInsets.navigationBars),
+        // Drawer overlay — scrim
+        if (drawerOpen) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(UgBlack.copy(alpha = 0.5f))
+                    .clickable { drawerOpen = false },
+            )
+        }
+
+        // Slide-in drawer
+        AnimatedVisibility(
+            visible = drawerOpen,
+            enter = slideInHorizontally { -it },
+            exit = slideOutHorizontally { -it },
         ) {
-            ScreenContent(currentScreen)
+            Column(
+                modifier = Modifier
+                    .width(280.dp)
+                    .fillMaxHeight()
+                    .background(UgBlack)
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .padding(vertical = 24.dp),
+            ) {
+                Text(
+                    text = "UNIGRID",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = UgWhite,
+                    fontWeight = FontWeight.Black,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+                Text(
+                    text = "Theme Demo",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = UgMediumGray,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+                Spacer(Modifier.height(32.dp))
+
+                DemoScreen.entries.forEach { screen ->
+                    val selected = screen == currentScreen
+                    val bgColor = if (selected) UgDarkGray else UgBlack
+                    val textColor = if (selected) UgRed else UgWhite
+
+                    Text(
+                        text = screen.label,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = textColor,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onScreenSelected(screen)
+                                drawerOpen = false
+                            }
+                            .background(bgColor)
+                            .padding(horizontal = 20.dp, vertical = 14.dp),
+                    )
+                }
+            }
         }
     }
 }
