@@ -36,7 +36,7 @@ fun UnigridNavBar(
         modifier = modifier
             .fillMaxWidth()
             .background(bgColor)
-            .padding(horizontal = spacing.level4, vertical = spacing.level2),
+            .padding(horizontal = spacing.level2, vertical = spacing.level2),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         brand?.let {
