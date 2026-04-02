@@ -28,6 +28,7 @@ import com.unigrid.theme.components.UnigridInput
 import com.unigrid.theme.components.UnigridLabel
 import com.unigrid.theme.components.UnigridPagination
 import com.unigrid.theme.components.UnigridRadio
+import com.unigrid.theme.components.UnigridSwitch
 import com.unigrid.theme.components.UnigridTable
 import com.unigrid.theme.components.UnigridTabs
 import com.unigrid.theme.components.UnigridTextArea
@@ -63,6 +64,7 @@ fun ComponentsScreen() {
         var email by remember { mutableStateOf("") }
         var message by remember { mutableStateOf("") }
         var subscribe by remember { mutableStateOf(false) }
+        var darkMode by remember { mutableStateOf(false) }
         var contactMethod by remember { mutableStateOf("email") }
 
         UnigridFormGroup {
@@ -108,6 +110,14 @@ fun ComponentsScreen() {
             checked = subscribe,
             onCheckedChange = { subscribe = it },
             label = "Subscribe to newsletter",
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        UnigridSwitch(
+            checked = darkMode,
+            onCheckedChange = { darkMode = it },
+            label = "Dark mode",
         )
 
         Spacer(Modifier.height(16.dp))

@@ -248,6 +248,53 @@ fun UnigridRadio(
 }
 
 @Composable
+fun UnigridSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    enabled: Boolean = true,
+) {
+    Row(
+        modifier = modifier.clickable(enabled = enabled) { onCheckedChange(!checked) },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val trackWidth = 44.dp
+        val trackHeight = 24.dp
+        val thumbSize = 18.dp
+        val trackColor = if (checked) {
+            if (enabled) UgBlack else UgMediumGray
+        } else {
+            if (enabled) UgLightGray else UgLightGray.copy(alpha = 0.5f)
+        }
+        val thumbColor = UgWhite
+
+        Box(
+            modifier = Modifier
+                .width(trackWidth)
+                .height(trackHeight)
+                .background(trackColor, CircleShape),
+            contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart,
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(3.dp)
+                    .size(thumbSize)
+                    .background(thumbColor, CircleShape),
+            )
+        }
+        if (label != null) {
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (enabled) UgBlack else UgMediumGray,
+            )
+        }
+    }
+}
+
+@Composable
 fun UnigridHelpText(
     text: String,
     modifier: Modifier = Modifier,
