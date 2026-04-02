@@ -197,8 +197,11 @@ private fun ExpandedLayout(
                 .background(UgBlack)
                 .padding(vertical = 24.dp),
         ) {
-            UnigridLogo(
-                size = 56.dp,
+            Text(
+                text = "Unigrid",
+                style = MaterialTheme.typography.displayMedium,
+                color = UgWhite,
+                fontWeight = FontWeight.Black,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
             Spacer(Modifier.height(4.dp))
