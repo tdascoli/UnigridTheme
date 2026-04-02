@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- White "U" letterform, centered in 108x108 adaptive icon safe zone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54.72,75.59q-8,0 -13.94,-2.93 -5.94,-2.92 -9.25,-8.17 -3.27,-5.29 -3.27,-12.31L28.26,10.58L41.38,10.58L41.38,51.11q0,5.59 3.61,9.25 3.66,3.61 9.73,3.61 6.02,0 9.64,-3.61 3.65,-3.66 3.65,-9.25L68.01,10.58L81.17,10.58L81.17,52.19q0,7.01 -3.35,12.3 -3.31,5.25 -9.25,8.17 -5.94,2.93 -13.85,2.93Z" />
+</vector>
