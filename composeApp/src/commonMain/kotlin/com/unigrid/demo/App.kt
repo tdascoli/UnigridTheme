@@ -204,7 +204,7 @@ private fun ExpandedLayout(
                 .padding(vertical = 24.dp),
         ) {
             Text(
-                text = "UNIGRID",
+                text = "Unigrid",
                 style = MaterialTheme.typography.displayMedium,
                 color = UgWhite,
                 fontWeight = FontWeight.Black,
