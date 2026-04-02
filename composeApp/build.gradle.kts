@@ -24,6 +24,9 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.ui)
         }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+        }
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
