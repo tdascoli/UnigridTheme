@@ -7,15 +7,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.Font
-import unigrid_theme.generated.resources.Res
-import unigrid_theme.generated.resources.inter_black
-import unigrid_theme.generated.resources.inter_bold
-import unigrid_theme.generated.resources.inter_extrabold
-import unigrid_theme.generated.resources.inter_light
-import unigrid_theme.generated.resources.inter_medium
-import unigrid_theme.generated.resources.inter_regular
-import unigrid_theme.generated.resources.inter_semibold
-import unigrid_theme.generated.resources.inter_thin
+import unigridtheme.unigrid_theme.generated.resources.Res
+import unigridtheme.unigrid_theme.generated.resources.inter_black
+import unigridtheme.unigrid_theme.generated.resources.inter_bold
+import unigridtheme.unigrid_theme.generated.resources.inter_extrabold
+import unigridtheme.unigrid_theme.generated.resources.inter_light
+import unigridtheme.unigrid_theme.generated.resources.inter_medium
+import unigridtheme.unigrid_theme.generated.resources.inter_regular
+import unigridtheme.unigrid_theme.generated.resources.inter_semibold
+import unigridtheme.unigrid_theme.generated.resources.inter_thin
 
 @Composable
 fun InterFontFamily(): FontFamily = FontFamily(
