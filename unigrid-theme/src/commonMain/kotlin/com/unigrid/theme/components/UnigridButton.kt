@@ -65,13 +65,13 @@ fun UnigridButton(
     }
     val textStyle = when (size) {
         ButtonSize.Sm -> MaterialTheme.typography.labelSmall
-        ButtonSize.Md -> MaterialTheme.typography.labelMedium
-        ButtonSize.Lg -> MaterialTheme.typography.labelLarge
+        ButtonSize.Md -> MaterialTheme.typography.labelSmall
+        ButtonSize.Lg -> MaterialTheme.typography.labelMedium
     }
     val heightMod = when (size) {
-        ButtonSize.Sm -> Modifier.height(32.dp)
-        ButtonSize.Md -> Modifier.height(40.dp)
-        ButtonSize.Lg -> Modifier.height(48.dp)
+        ButtonSize.Sm -> Modifier.height(36.dp)
+        ButtonSize.Md -> Modifier.height(44.dp)
+        ButtonSize.Lg -> Modifier.height(52.dp)
     }
     val widthMod = if (fullWidth) Modifier.fillMaxWidth() else Modifier
     val combinedMod = modifier.then(widthMod).then(heightMod)
