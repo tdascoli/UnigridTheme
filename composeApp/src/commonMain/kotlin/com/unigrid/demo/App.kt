@@ -41,6 +41,7 @@ import com.unigrid.theme.UgMediumGray
 import com.unigrid.theme.UgRed
 import com.unigrid.theme.UgWhite
 import com.unigrid.theme.UnigridTheme
+import com.unigrid.theme.components.UnigridLogo
 import com.unigrid.theme.components.UnigridNavBar
 
 enum class DemoScreen(val label: String) {
@@ -104,12 +105,7 @@ private fun CompactLayout(
                                 fontSize = 22.sp,
                             )
                         }
-                        Text(
-                            text = "Unigrid",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Black,
-                            color = UgWhite,
-                        )
+                        UnigridLogo(size = 32.dp)
                     },
                 ) {}
             }
@@ -150,13 +146,11 @@ private fun CompactLayout(
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(vertical = 24.dp),
             ) {
-                Text(
-                    text = "Unigrid",
-                    style = MaterialTheme.typography.displayMedium,
-                    color = UgWhite,
-                    fontWeight = FontWeight.Black,
+                UnigridLogo(
+                    size = 48.dp,
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
+                Spacer(Modifier.height(4.dp))
                 Text(
                     text = "Theme Demo",
                     style = MaterialTheme.typography.bodyMedium,
@@ -210,6 +204,7 @@ private fun ExpandedLayout(
                 fontWeight = FontWeight.Black,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
+            Spacer(Modifier.height(4.dp))
             Text(
                 text = "Theme Demo",
                 style = MaterialTheme.typography.bodyMedium,
