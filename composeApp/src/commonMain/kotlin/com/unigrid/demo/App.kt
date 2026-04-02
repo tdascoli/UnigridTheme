@@ -105,7 +105,7 @@ private fun CompactLayout(
                             )
                         }
                         Text(
-                            text = "UNIGRID",
+                            text = "Unigrid",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Black,
                             color = UgWhite,
@@ -151,7 +151,7 @@ private fun CompactLayout(
                     .padding(vertical = 24.dp),
             ) {
                 Text(
-                    text = "UNIGRID",
+                    text = "Unigrid",
                     style = MaterialTheme.typography.displayMedium,
                     color = UgWhite,
                     fontWeight = FontWeight.Black,

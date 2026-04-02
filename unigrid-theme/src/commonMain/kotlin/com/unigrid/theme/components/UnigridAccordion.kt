@@ -77,7 +77,7 @@ fun UnigridAccordionSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onToggle)
-                .padding(vertical = spacing.level2, horizontal = spacing.level3),
+                .padding(vertical = spacing.level2),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -102,11 +102,7 @@ fun UnigridAccordionSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        start = spacing.level3,
-                        end = spacing.level3,
-                        bottom = spacing.level3,
-                    ),
+                    .padding(bottom = spacing.level3),
             ) {
                 content()
             }
