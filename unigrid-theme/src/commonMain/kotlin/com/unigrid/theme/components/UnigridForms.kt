@@ -273,14 +273,14 @@ fun UnigridSwitch(
             modifier = Modifier
                 .width(trackWidth)
                 .height(trackHeight)
-                .background(trackColor, CircleShape),
+                .background(trackColor, RoundedCornerShape(2.dp)),
             contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart,
         ) {
             Box(
                 modifier = Modifier
                     .padding(3.dp)
                     .size(thumbSize)
-                    .background(thumbColor, CircleShape),
+                    .background(thumbColor, RoundedCornerShape(2.dp)),
             )
         }
         if (label != null) {
