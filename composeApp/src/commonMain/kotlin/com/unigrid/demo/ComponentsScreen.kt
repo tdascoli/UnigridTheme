@@ -2,7 +2,6 @@ package com.unigrid.demo
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -16,16 +15,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.unigrid.theme.UgBlack
 import com.unigrid.theme.UgMediumGray
-import com.unigrid.theme.UgWhite
 import com.unigrid.theme.components.AccordionItem
 import com.unigrid.theme.components.TableColumn
 import com.unigrid.theme.components.TabItem
 import com.unigrid.theme.components.TabVariant
 import com.unigrid.theme.components.UnigridAccordion
-import com.unigrid.theme.components.UnigridFooter
+import com.unigrid.theme.components.UnigridCheckbox
+import com.unigrid.theme.components.UnigridErrorText
+import com.unigrid.theme.components.UnigridFormGroup
+import com.unigrid.theme.components.UnigridHelpText
+import com.unigrid.theme.components.UnigridInput
+import com.unigrid.theme.components.UnigridLabel
 import com.unigrid.theme.components.UnigridPagination
+import com.unigrid.theme.components.UnigridRadio
 import com.unigrid.theme.components.UnigridTable
 import com.unigrid.theme.components.UnigridTabs
+import com.unigrid.theme.components.UnigridTextArea
 
 private data class SampleRow(val name: String, val role: String, val status: String)
 
@@ -45,6 +50,89 @@ fun ComponentsScreen() {
             color = UgBlack,
         )
         Spacer(Modifier.height(24.dp))
+
+        // Forms
+        Text(
+            text = "Forms",
+            style = MaterialTheme.typography.headlineMedium,
+            color = UgBlack,
+        )
+        Spacer(Modifier.height(12.dp))
+
+        var name by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("") }
+        var message by remember { mutableStateOf("") }
+        var subscribe by remember { mutableStateOf(false) }
+        var contactMethod by remember { mutableStateOf("email") }
+
+        UnigridFormGroup {
+            UnigridLabel("Name")
+            UnigridInput(
+                value = name,
+                onValueChange = { name = it },
+                placeholder = "Enter your name",
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        UnigridFormGroup {
+            UnigridLabel("Email")
+            UnigridInput(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = "you@example.com",
+                isError = email.isNotEmpty() && !email.contains("@"),
+            )
+            if (email.isNotEmpty() && !email.contains("@")) {
+                UnigridErrorText("Please enter a valid email address")
+            } else {
+                UnigridHelpText("We'll never share your email")
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        UnigridFormGroup {
+            UnigridLabel("Message")
+            UnigridTextArea(
+                value = message,
+                onValueChange = { message = it },
+                placeholder = "Your message...",
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        UnigridCheckbox(
+            checked = subscribe,
+            onCheckedChange = { subscribe = it },
+            label = "Subscribe to newsletter",
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        UnigridLabel("Preferred contact method")
+        Spacer(Modifier.height(8.dp))
+        UnigridRadio(
+            selected = contactMethod == "email",
+            onClick = { contactMethod = "email" },
+            label = "Email",
+        )
+        Spacer(Modifier.height(4.dp))
+        UnigridRadio(
+            selected = contactMethod == "phone",
+            onClick = { contactMethod = "phone" },
+            label = "Phone",
+        )
+        Spacer(Modifier.height(4.dp))
+        UnigridRadio(
+            selected = contactMethod == "mail",
+            onClick = { contactMethod = "mail" },
+            label = "Mail",
+        )
+
+        Spacer(Modifier.height(32.dp))
 
         // Table
         Text(
@@ -153,24 +241,6 @@ fun ComponentsScreen() {
             totalPages = 5,
             onPageSelected = { currentPage = it },
         )
-
-        Spacer(Modifier.height(32.dp))
-
-        // Footer
-        Text(
-            text = "Footer",
-            style = MaterialTheme.typography.headlineMedium,
-            color = UgBlack,
-        )
-        Spacer(Modifier.height(12.dp))
-
-        UnigridFooter(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Unigrid Theme Demo - Built with Compose Multiplatform",
-                style = MaterialTheme.typography.bodySmall,
-                color = UgWhite,
-            )
-        }
 
         Spacer(Modifier.height(24.dp))
     }
