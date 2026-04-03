@@ -54,14 +54,6 @@ fun ComponentsScreen() {
         )
         Spacer(Modifier.height(24.dp))
 
-        // Forms
-        Text(
-            text = "Forms",
-            style = MaterialTheme.typography.headlineMedium,
-            color = UgBlack,
-        )
-        Spacer(Modifier.height(12.dp))
-
         // Text Fields (M3 style)
         Text(
             text = "Text Fields",
