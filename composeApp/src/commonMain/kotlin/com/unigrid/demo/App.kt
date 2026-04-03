@@ -52,6 +52,9 @@ enum class DemoScreen(val label: String) {
     Cards("Cards"),
     Layout("Layout"),
     Components("Components"),
+    Feedback("Feedback"),
+    Selection("Selection"),
+    Navigation("Navigation"),
 }
 
 @Composable
@@ -260,5 +263,8 @@ private fun ScreenContent(currentScreen: DemoScreen) {
         DemoScreen.Cards -> CardsScreen()
         DemoScreen.Layout -> LayoutScreen()
         DemoScreen.Components -> ComponentsScreen()
+        DemoScreen.Feedback -> FeedbackScreen()
+        DemoScreen.Selection -> SelectionScreen()
+        DemoScreen.Navigation -> NavigationScreen()
     }
 }
