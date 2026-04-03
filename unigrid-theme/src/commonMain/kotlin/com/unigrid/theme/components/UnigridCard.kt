@@ -74,7 +74,7 @@ fun UnigridCard(
                     Modifier
                         .fillMaxWidth()
                         .background(accent.color)
-                        .padding(vertical = 1.5.dp) // 3dp total height
+                        .padding(vertical = 3.dp) // 6dp total height
                 )
             }
             scope.content()
