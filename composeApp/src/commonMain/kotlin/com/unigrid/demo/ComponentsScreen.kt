@@ -32,6 +32,8 @@ import com.unigrid.theme.components.UnigridSwitch
 import com.unigrid.theme.components.UnigridTable
 import com.unigrid.theme.components.UnigridTabs
 import com.unigrid.theme.components.UnigridTextArea
+import com.unigrid.theme.components.UnigridFilledTextField
+import com.unigrid.theme.components.UnigridOutlinedTextField
 
 private data class SampleRow(val name: String, val role: String, val status: String)
 
@@ -60,49 +62,82 @@ fun ComponentsScreen() {
         )
         Spacer(Modifier.height(12.dp))
 
-        var name by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-        var message by remember { mutableStateOf("") }
+        // Text Fields (M3 style)
+        Text(
+            text = "Text Fields",
+            style = MaterialTheme.typography.headlineMedium,
+            color = UgBlack,
+        )
+        Spacer(Modifier.height(12.dp))
+
+        var filledName by remember { mutableStateOf("") }
+        var outlinedEmail by remember { mutableStateOf("") }
+        var filledAmount by remember { mutableStateOf("") }
+        var outlinedBio by remember { mutableStateOf("") }
+
+        Text("Filled", style = MaterialTheme.typography.labelLarge, color = UgMediumGray)
+        Spacer(Modifier.height(8.dp))
+        UnigridFilledTextField(
+            value = filledName,
+            onValueChange = { filledName = it },
+            label = "Name",
+            placeholder = "Enter your name",
+            supportingText = "Required field",
+        )
+        Spacer(Modifier.height(12.dp))
+        UnigridFilledTextField(
+            value = filledAmount,
+            onValueChange = { filledAmount = it },
+            label = "Amount",
+            prefix = "$",
+            suffix = "USD",
+            supportingText = "Enter amount in dollars",
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        Text("Outlined", style = MaterialTheme.typography.labelLarge, color = UgMediumGray)
+        Spacer(Modifier.height(8.dp))
+        UnigridOutlinedTextField(
+            value = outlinedEmail,
+            onValueChange = { outlinedEmail = it },
+            label = "Email",
+            placeholder = "you@example.com",
+            isError = outlinedEmail.isNotEmpty() && !outlinedEmail.contains("@"),
+            supportingText = if (outlinedEmail.isNotEmpty() && !outlinedEmail.contains("@"))
+                "Please enter a valid email" else "We'll never share your email",
+        )
+        Spacer(Modifier.height(12.dp))
+        UnigridOutlinedTextField(
+            value = outlinedBio,
+            onValueChange = { outlinedBio = it },
+            label = "Bio",
+            placeholder = "Tell us about yourself...",
+            singleLine = false,
+            minLines = 3,
+            maxLength = 200,
+        )
+        Spacer(Modifier.height(12.dp))
+        UnigridOutlinedTextField(
+            value = "",
+            onValueChange = {},
+            label = "Disabled field",
+            enabled = false,
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        // Legacy Forms
+        Text(
+            text = "Form Controls",
+            style = MaterialTheme.typography.headlineMedium,
+            color = UgBlack,
+        )
+        Spacer(Modifier.height(12.dp))
+
         var subscribe by remember { mutableStateOf(false) }
         var darkMode by remember { mutableStateOf(false) }
         var contactMethod by remember { mutableStateOf("email") }
-
-        UnigridFormGroup {
-            UnigridLabel("Name")
-            UnigridInput(
-                value = name,
-                onValueChange = { name = it },
-                placeholder = "Enter your name",
-            )
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        UnigridFormGroup {
-            UnigridLabel("Email")
-            UnigridInput(
-                value = email,
-                onValueChange = { email = it },
-                placeholder = "you@example.com",
-                isError = email.isNotEmpty() && !email.contains("@"),
-            )
-            if (email.isNotEmpty() && !email.contains("@")) {
-                UnigridErrorText("Please enter a valid email address")
-            } else {
-                UnigridHelpText("We'll never share your email")
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        UnigridFormGroup {
-            UnigridLabel("Message")
-            UnigridTextArea(
-                value = message,
-                onValueChange = { message = it },
-                placeholder = "Your message...",
-            )
-        }
 
         Spacer(Modifier.height(16.dp))
 
