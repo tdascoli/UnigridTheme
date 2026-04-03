@@ -28,12 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.unigrid.theme.UgBlack
 import com.unigrid.theme.UgLightGray
 import com.unigrid.theme.UgMediumGray
@@ -85,9 +83,13 @@ fun UnigridFilledTextField(
     )
     val containerColor = if (enabled) UgWarmGray else UgLightGray.copy(alpha = 0.5f)
     val textColor = if (enabled) UgBlack else UgMediumGray
+    val labelColor = when {
+        isError -> UgRed
+        isFocused -> UgBlack
+        else -> UgMediumGray
+    }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        // Container
         BasicTextField(
             value = value,
             onValueChange = { newValue ->
@@ -108,7 +110,7 @@ fun UnigridFilledTextField(
             decorationBox = { innerTextField ->
                 val indColor = indicatorColor
                 val indWidth = indicatorWidth
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(containerColor, RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp))
@@ -120,81 +122,59 @@ fun UnigridFilledTextField(
                                 strokeWidth = indWidth.toPx(),
                             )
                         }
-                        .padding(
-                            start = if (leadingIcon != null) 12.dp else 16.dp,
-                            end = if (trailingIcon != null) 12.dp else 16.dp,
-                            top = if (label != null) 24.dp else 16.dp,
-                            bottom = 8.dp,
-                        ),
+                        .padding(horizontal = 16.dp),
                 ) {
-                    // Leading icon
-                    if (leadingIcon != null) {
-                        Box(
-                            modifier = Modifier.align(Alignment.CenterStart).padding(end = 12.dp),
-                        ) {
-                            leadingIcon()
-                        }
-                    }
-
-                    // Trailing icon
-                    if (trailingIcon != null) {
-                        Box(
-                            modifier = Modifier.align(Alignment.CenterEnd).padding(start = 12.dp),
-                        ) {
-                            trailingIcon()
-                        }
-                    }
-
-                    // Label
+                    // Floating label
                     if (label != null) {
-                        val labelStyle = if (labelFloating) {
-                            MaterialTheme.typography.bodySmall.copy(
-                                color = if (isError) UgRed else if (isFocused) UgBlack else UgMediumGray,
-                                fontSize = 12.sp,
-                            )
-                        } else {
-                            MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
-                        }
+                        Spacer(Modifier.height(if (labelFloating) 8.dp else 16.dp))
                         Text(
                             text = label,
-                            style = labelStyle,
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(
-                                    start = if (leadingIcon != null) 36.dp else 0.dp,
-                                    top = if (labelFloating) 0.dp else 8.dp,
-                                ),
+                            style = if (labelFloating) {
+                                MaterialTheme.typography.bodySmall.copy(color = labelColor)
+                            } else {
+                                MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
+                            },
                         )
+                        if (labelFloating) Spacer(Modifier.height(4.dp))
+                    } else {
+                        Spacer(Modifier.height(16.dp))
                     }
 
-                    // Input row
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                start = if (leadingIcon != null) 36.dp else 0.dp,
-                                end = if (trailingIcon != null) 36.dp else 0.dp,
-                                top = if (label != null && labelFloating) 12.dp else 0.dp,
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        if (prefix != null) {
-                            Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                            Spacer(Modifier.width(4.dp))
-                        }
-                        Box(modifier = Modifier.weight(1f)) {
-                            if (!hasText && placeholder.isNotEmpty() && !labelFloating) {
-                                // Don't show placeholder when label is in resting position
-                            } else if (!hasText && placeholder.isNotEmpty()) {
-                                Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                    // Input row (only visible when label is floating or no label)
+                    if (label == null || labelFloating) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            if (leadingIcon != null) {
+                                leadingIcon()
+                                Spacer(Modifier.width(8.dp))
                             }
-                            innerTextField()
+                            if (prefix != null) {
+                                Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                                Spacer(Modifier.width(4.dp))
+                            }
+                            Box(modifier = Modifier.weight(1f)) {
+                                if (!hasText && placeholder.isNotEmpty()) {
+                                    Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                                }
+                                innerTextField()
+                            }
+                            if (suffix != null) {
+                                Spacer(Modifier.width(4.dp))
+                                Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                            }
+                            if (trailingIcon != null) {
+                                Spacer(Modifier.width(8.dp))
+                                trailingIcon()
+                            }
                         }
-                        if (suffix != null) {
-                            Spacer(Modifier.width(4.dp))
-                            Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                        }
+                    } else {
+                        // Hidden input to keep BasicTextField happy
+                        Box(modifier = Modifier.height(0.dp)) { innerTextField() }
                     }
+
+                    Spacer(Modifier.height(8.dp))
                 }
             },
         )
@@ -268,9 +248,13 @@ fun UnigridOutlinedTextField(
         animationSpec = tween(150),
     )
     val textColor = if (enabled) UgBlack else UgMediumGray
+    val labelColor = when {
+        isError -> UgRed
+        isFocused -> UgBlack
+        else -> UgMediumGray
+    }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        // Container
         BasicTextField(
             value = value,
             onValueChange = { newValue ->
@@ -289,80 +273,66 @@ fun UnigridOutlinedTextField(
             interactionSource = interactionSource,
             modifier = Modifier.fillMaxWidth(),
             decorationBox = { innerTextField ->
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(borderWidth, borderColor, RoundedCornerShape(2.dp))
-                        .background(if (enabled) UgWhite else UgLightGray.copy(alpha = 0.2f), RoundedCornerShape(2.dp))
-                        .padding(
-                            start = if (leadingIcon != null) 12.dp else 16.dp,
-                            end = if (trailingIcon != null) 12.dp else 16.dp,
-                            top = if (label != null) 24.dp else 16.dp,
-                            bottom = 8.dp,
-                        ),
+                        .background(
+                            if (enabled) UgWhite else UgLightGray.copy(alpha = 0.2f),
+                            RoundedCornerShape(2.dp),
+                        )
+                        .padding(horizontal = 16.dp),
                 ) {
-                    // Leading icon
-                    if (leadingIcon != null) {
-                        Box(modifier = Modifier.align(Alignment.CenterStart).padding(end = 12.dp)) {
-                            leadingIcon()
-                        }
-                    }
-
-                    // Trailing icon
-                    if (trailingIcon != null) {
-                        Box(modifier = Modifier.align(Alignment.CenterEnd).padding(start = 12.dp)) {
-                            trailingIcon()
-                        }
-                    }
-
-                    // Label
+                    // Floating label
                     if (label != null) {
-                        val labelStyle = if (labelFloating) {
-                            MaterialTheme.typography.bodySmall.copy(
-                                color = if (isError) UgRed else if (isFocused) UgBlack else UgMediumGray,
-                                fontSize = 12.sp,
-                            )
-                        } else {
-                            MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
-                        }
+                        Spacer(Modifier.height(if (labelFloating) 8.dp else 16.dp))
                         Text(
                             text = label,
-                            style = labelStyle,
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(
-                                    start = if (leadingIcon != null) 36.dp else 0.dp,
-                                    top = if (labelFloating) 0.dp else 8.dp,
-                                ),
+                            style = if (labelFloating) {
+                                MaterialTheme.typography.bodySmall.copy(color = labelColor)
+                            } else {
+                                MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
+                            },
                         )
+                        if (labelFloating) Spacer(Modifier.height(4.dp))
+                    } else {
+                        Spacer(Modifier.height(16.dp))
                     }
 
                     // Input row
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                start = if (leadingIcon != null) 36.dp else 0.dp,
-                                end = if (trailingIcon != null) 36.dp else 0.dp,
-                                top = if (label != null && labelFloating) 12.dp else 0.dp,
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        if (prefix != null) {
-                            Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                            Spacer(Modifier.width(4.dp))
-                        }
-                        Box(modifier = Modifier.weight(1f)) {
-                            if (!hasText && placeholder.isNotEmpty() && labelFloating) {
-                                Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                    if (label == null || labelFloating) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            if (leadingIcon != null) {
+                                leadingIcon()
+                                Spacer(Modifier.width(8.dp))
                             }
-                            innerTextField()
+                            if (prefix != null) {
+                                Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                                Spacer(Modifier.width(4.dp))
+                            }
+                            Box(modifier = Modifier.weight(1f)) {
+                                if (!hasText && placeholder.isNotEmpty()) {
+                                    Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                                }
+                                innerTextField()
+                            }
+                            if (suffix != null) {
+                                Spacer(Modifier.width(4.dp))
+                                Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                            }
+                            if (trailingIcon != null) {
+                                Spacer(Modifier.width(8.dp))
+                                trailingIcon()
+                            }
                         }
-                        if (suffix != null) {
-                            Spacer(Modifier.width(4.dp))
-                            Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                        }
+                    } else {
+                        Box(modifier = Modifier.height(0.dp)) { innerTextField() }
                     }
+
+                    Spacer(Modifier.height(12.dp))
                 }
             },
         )
@@ -420,44 +390,16 @@ fun UnigridTextField(
 ) {
     when (variant) {
         TextFieldVariant.Filled -> UnigridFilledTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = modifier,
-            label = label,
-            placeholder = placeholder,
-            supportingText = supportingText,
-            isError = isError,
-            enabled = enabled,
-            singleLine = singleLine,
-            minLines = minLines,
-            maxLength = maxLength,
-            leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
-            prefix = prefix,
-            suffix = suffix,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            visualTransformation = visualTransformation,
+            value, onValueChange, modifier, label, placeholder, supportingText,
+            isError, enabled, singleLine, minLines, maxLength, leadingIcon,
+            trailingIcon, prefix, suffix, keyboardOptions, keyboardActions,
+            visualTransformation,
         )
         TextFieldVariant.Outlined -> UnigridOutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = modifier,
-            label = label,
-            placeholder = placeholder,
-            supportingText = supportingText,
-            isError = isError,
-            enabled = enabled,
-            singleLine = singleLine,
-            minLines = minLines,
-            maxLength = maxLength,
-            leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
-            prefix = prefix,
-            suffix = suffix,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            visualTransformation = visualTransformation,
+            value, onValueChange, modifier, label, placeholder, supportingText,
+            isError, enabled, singleLine, minLines, maxLength, leadingIcon,
+            trailingIcon, prefix, suffix, keyboardOptions, keyboardActions,
+            visualTransformation,
         )
     }
 }
