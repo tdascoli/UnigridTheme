@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,11 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.unigrid.theme.UgBlack
 import com.unigrid.theme.UgBlue
 import com.unigrid.theme.UgBrown
-import com.unigrid.theme.UgDarkGray
 import com.unigrid.theme.UgGreen
 import com.unigrid.theme.UgLightGray
 import com.unigrid.theme.UgMediumGray
@@ -47,9 +49,15 @@ enum class ButtonColor(val bg: Color, val fg: Color) {
     Light(UgLightGray, UgBlack),
 }
 
-enum class ButtonSize { Md, Lg }
+enum class ButtonSize(val height: Dp, val hPadding: Dp, val vPadding: Dp) {
+    Md(height = 44.dp, hPadding = 20.dp, vPadding = 0.dp),
+    Lg(height = 52.dp, hPadding = 28.dp, vPadding = 0.dp),
+}
 
 private val SharpShape = RoundedCornerShape(0.dp)
+
+// Shared default height for all Md-sized button types
+private val MdHeight = 44.dp
 
 // --- Standard Button ---
 
@@ -66,16 +74,13 @@ fun UnigridButton(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
 ) {
-    val contentPadding = when (size) {
-        ButtonSize.Md -> PaddingValues(horizontal = 20.dp, vertical = 10.dp)
-        ButtonSize.Lg -> PaddingValues(horizontal = 28.dp, vertical = 14.dp)
-    }
+    val contentPadding = PaddingValues(horizontal = size.hPadding)
     val textStyle = when (size) {
         ButtonSize.Md -> MaterialTheme.typography.labelSmall
         ButtonSize.Lg -> MaterialTheme.typography.labelMedium
     }
     val widthMod = if (fullWidth) Modifier.fillMaxWidth() else Modifier
-    val combinedMod = modifier.then(widthMod)
+    val combinedMod = modifier.then(widthMod).height(size.height)
 
     val content: @Composable () -> Unit = {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -157,11 +162,13 @@ fun UnigridToggleButton(
 
     Box(
         modifier = modifier
+            .height(MdHeight)
+            .defaultMinSize(minWidth = MdHeight)
             .border(2.dp, borderColor, SharpShape)
             .background(if (enabled) bgColor else UgMediumGray.copy(alpha = 0.2f), SharpShape)
             .clip(SharpShape)
             .clickable(enabled = enabled, onClick = onToggle)
-            .padding(horizontal = 20.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -187,10 +194,6 @@ fun UnigridIconButton(
         ButtonVariant.Filled -> if (enabled) color.bg else UgMediumGray
         else -> Color.Transparent
     }
-    val fgColor = when (variant) {
-        ButtonVariant.Filled -> color.fg
-        else -> if (enabled) color.bg else UgMediumGray
-    }
     val borderMod = when (variant) {
         ButtonVariant.Outline -> Modifier.border(2.dp, if (enabled) color.bg else UgMediumGray, SharpShape)
         else -> Modifier
@@ -198,7 +201,7 @@ fun UnigridIconButton(
 
     Box(
         modifier = modifier
-            .size(44.dp)
+            .size(MdHeight)
             .then(borderMod)
             .background(bgColor, SharpShape)
             .clip(SharpShape)
@@ -220,12 +223,15 @@ fun UnigridSplitButton(
     color: ButtonColor = ButtonColor.Black,
     enabled: Boolean = true,
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier.height(MdHeight),
+    ) {
         Button(
             onClick = onMainClick,
+            modifier = Modifier.height(MdHeight),
             enabled = enabled,
             shape = SharpShape,
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = color.bg,
                 contentColor = color.fg,
@@ -237,23 +243,24 @@ fun UnigridSplitButton(
         }
         Box(
             modifier = Modifier
-                .background(if (enabled) color.bg else UgMediumGray)
-                .padding(start = 1.dp)
+                .height(MdHeight)
+                .background(if (enabled) color.fg.copy(alpha = 0.3f) else UgMediumGray)
+                .width(1.dp),
+        )
+        Button(
+            onClick = onDropdownClick,
+            modifier = Modifier.height(MdHeight),
+            enabled = enabled,
+            shape = SharpShape,
+            contentPadding = PaddingValues(horizontal = 14.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = color.bg,
+                contentColor = color.fg,
+                disabledContainerColor = UgMediumGray,
+                disabledContentColor = UgWhite,
+            ),
         ) {
-            Button(
-                onClick = onDropdownClick,
-                enabled = enabled,
-                shape = SharpShape,
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (enabled) color.bg.darken() else UgMediumGray,
-                    contentColor = color.fg,
-                    disabledContainerColor = UgMediumGray,
-                    disabledContentColor = UgWhite,
-                ),
-            ) {
-                Text("\u25BE", style = MaterialTheme.typography.labelMedium)
-            }
+            Text("\u25BE", style = MaterialTheme.typography.labelSmall)
         }
     }
 }
@@ -286,11 +293,12 @@ fun UnigridButtonGroupItem(
 
     Box(
         modifier = modifier
+            .height(MdHeight)
             .border(2.dp, color.bg, SharpShape)
             .background(bgColor, SharpShape)
             .clip(SharpShape)
             .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 10.dp),
+            .padding(horizontal = 20.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -312,15 +320,14 @@ fun UnigridFab(
     text: String? = null,
     icon: @Composable () -> Unit,
 ) {
+    val fabSize = 56.dp
     Box(
         modifier = modifier
+            .then(if (extended) Modifier.height(fabSize) else Modifier.size(fabSize))
             .background(color.bg, SharpShape)
             .clip(SharpShape)
             .clickable(onClick = onClick)
-            .padding(
-                horizontal = if (extended) 20.dp else 16.dp,
-                vertical = 16.dp,
-            ),
+            .padding(horizontal = if (extended) 20.dp else 0.dp),
         contentAlignment = Alignment.Center,
     ) {
         if (extended && text != null) {
@@ -337,14 +344,4 @@ fun UnigridFab(
             icon()
         }
     }
-}
-
-// Helper to darken a color slightly for the split button dropdown
-private fun Color.darken(): Color {
-    return Color(
-        red = (red * 0.85f).coerceIn(0f, 1f),
-        green = (green * 0.85f).coerceIn(0f, 1f),
-        blue = (blue * 0.85f).coerceIn(0f, 1f),
-        alpha = alpha,
-    )
 }
