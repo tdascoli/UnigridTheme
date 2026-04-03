@@ -71,15 +71,12 @@ fun <T> UnigridTable(
                     Box(
                         modifier = Modifier
                             .weight(col.weight)
-                            .padding(cellPadding)
-                            .let { m ->
-                                if (bordered) m.border(0.5.dp, borderColor) else m
-                            },
+                            .padding(cellPadding),
                         contentAlignment = align,
                     ) {
                         Text(
                             text = col.header,
-                            style = MaterialTheme.typography.labelLarge,
+                            style = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "liga, calt, case, tnum, lnum, ss07"),
                             color = textColor,
                         )
                     }
@@ -107,10 +104,7 @@ fun <T> UnigridTable(
                     Box(
                         modifier = Modifier
                             .weight(col.weight)
-                            .padding(cellPadding)
-                            .let { m ->
-                                if (bordered) m.border(0.5.dp, borderColor) else m
-                            },
+                            .padding(cellPadding),
                         contentAlignment = align,
                     ) {
                         col.cell(row)

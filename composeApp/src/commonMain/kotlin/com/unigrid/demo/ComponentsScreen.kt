@@ -36,10 +36,10 @@ import com.unigrid.theme.components.UnigridTextArea
 private data class SampleRow(val name: String, val role: String, val status: String)
 
 private val sampleData = listOf(
-    SampleRow("Alice", "Engineer", "Active"),
-    SampleRow("Bob", "Designer", "Active"),
-    SampleRow("Charlie", "Manager", "Away"),
-    SampleRow("Diana", "Analyst", "Active"),
+    SampleRow("Alice", "Engineer", "1234"),
+    SampleRow("Bob", "Designer", "5678"),
+    SampleRow("Charlie", "Manager", "9012"),
+    SampleRow("Diana", "Analyst", "3456"),
 )
 
 @Composable
@@ -154,14 +154,14 @@ fun ComponentsScreen() {
 
         UnigridTable(
             columns = listOf(
-                TableColumn<SampleRow>(header = "Name") { row ->
-                    Text(row.name, style = MaterialTheme.typography.bodyMedium, color = UgBlack)
+                TableColumn(header = "Name") { row ->
+                    Text(row.name, style = MaterialTheme.typography.bodyMedium.copy(fontFeatureSettings = "liga, calt, case, tnum, lnum, ss07"), color = UgBlack)
                 },
-                TableColumn<SampleRow>(header = "Role") { row ->
-                    Text(row.role, style = MaterialTheme.typography.bodyMedium, color = UgBlack)
+                TableColumn(header = "Role") { row ->
+                    Text(row.role, style = MaterialTheme.typography.bodyMedium.copy(fontFeatureSettings = "liga, calt, case, tnum, lnum, ss07"), color = UgBlack)
                 },
-                TableColumn<SampleRow>(header = "Status") { row ->
-                    Text(row.status, style = MaterialTheme.typography.bodyMedium, color = UgBlack)
+                TableColumn(header = "Status") { row ->
+                    Text(row.status, style = MaterialTheme.typography.bodyMedium.copy(fontFeatureSettings = "liga, calt, case, tnum, lnum, ss07"), color = UgBlack)
                 },
             ),
             rows = sampleData,
