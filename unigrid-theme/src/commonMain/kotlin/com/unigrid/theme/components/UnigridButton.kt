@@ -59,22 +59,17 @@ fun UnigridButton(
 ) {
     val spacing = UnigridTheme.spacing
     val contentPadding = when (size) {
-        ButtonSize.Sm -> PaddingValues(horizontal = spacing.level2, vertical = spacing.level1)
-        ButtonSize.Md -> PaddingValues(horizontal = spacing.level3, vertical = spacing.level2)
-        ButtonSize.Lg -> PaddingValues(horizontal = spacing.level4, vertical = spacing.level3)
+        ButtonSize.Sm -> PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+        ButtonSize.Md -> PaddingValues(horizontal = 20.dp, vertical = 10.dp)
+        ButtonSize.Lg -> PaddingValues(horizontal = 28.dp, vertical = 14.dp)
     }
     val textStyle = when (size) {
         ButtonSize.Sm -> MaterialTheme.typography.labelSmall
         ButtonSize.Md -> MaterialTheme.typography.labelSmall
         ButtonSize.Lg -> MaterialTheme.typography.labelMedium
     }
-    val heightMod = when (size) {
-        ButtonSize.Sm -> Modifier.height(36.dp)
-        ButtonSize.Md -> Modifier.height(44.dp)
-        ButtonSize.Lg -> Modifier.height(52.dp)
-    }
     val widthMod = if (fullWidth) Modifier.fillMaxWidth() else Modifier
-    val combinedMod = modifier.then(widthMod).then(heightMod)
+    val combinedMod = modifier.then(widthMod)
 
     val content: @Composable () -> Unit = {
         Row(verticalAlignment = Alignment.CenterVertically) {
