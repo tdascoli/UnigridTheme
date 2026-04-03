@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -110,9 +110,10 @@ fun UnigridFilledTextField(
             decorationBox = { innerTextField ->
                 val indColor = indicatorColor
                 val indWidth = indicatorWidth
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .defaultMinSize(minHeight = 56.dp)
                         .background(containerColor, RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp))
                         .drawBehind {
                             drawLine(
@@ -122,87 +123,56 @@ fun UnigridFilledTextField(
                                 strokeWidth = indWidth.toPx(),
                             )
                         }
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    // Floating label
-                    if (label != null) {
-                        Spacer(Modifier.height(if (labelFloating) 8.dp else 16.dp))
-                        Text(
-                            text = label,
-                            style = if (labelFloating) {
-                                MaterialTheme.typography.bodySmall.copy(color = labelColor)
-                            } else {
-                                MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
-                            },
-                        )
-                        if (labelFloating) Spacer(Modifier.height(4.dp))
-                    } else {
-                        Spacer(Modifier.height(16.dp))
+                    if (leadingIcon != null) {
+                        leadingIcon()
+                        Spacer(Modifier.width(8.dp))
+                    }
+                    if (prefix != null) {
+                        Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                        Spacer(Modifier.width(4.dp))
                     }
 
-                    // Input row (only visible when label is floating or no label)
-                    if (label == null || labelFloating) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            if (leadingIcon != null) {
-                                leadingIcon()
-                                Spacer(Modifier.width(8.dp))
-                            }
-                            if (prefix != null) {
-                                Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                                Spacer(Modifier.width(4.dp))
-                            }
-                            Box(modifier = Modifier.weight(1f)) {
-                                if (!hasText && placeholder.isNotEmpty()) {
-                                    Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                                }
-                                innerTextField()
-                            }
-                            if (suffix != null) {
-                                Spacer(Modifier.width(4.dp))
-                                Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                            }
-                            if (trailingIcon != null) {
-                                Spacer(Modifier.width(8.dp))
-                                trailingIcon()
-                            }
+                    // Label + input stacked
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (label != null) {
+                            Text(
+                                text = label,
+                                style = if (labelFloating) {
+                                    MaterialTheme.typography.bodySmall.copy(color = labelColor)
+                                } else {
+                                    MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
+                                },
+                                modifier = Modifier.align(if (labelFloating) Alignment.TopStart else Alignment.CenterStart),
+                            )
                         }
-                    } else {
-                        // Hidden input to keep BasicTextField happy
-                        Box(modifier = Modifier.height(0.dp)) { innerTextField() }
+                        Box(
+                            modifier = Modifier
+                                .align(if (label != null) Alignment.BottomStart else Alignment.CenterStart)
+                                .fillMaxWidth(),
+                        ) {
+                            if (!hasText && placeholder.isNotEmpty() && (label == null || labelFloating)) {
+                                Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                            }
+                            innerTextField()
+                        }
                     }
 
-                    Spacer(Modifier.height(8.dp))
+                    if (suffix != null) {
+                        Spacer(Modifier.width(4.dp))
+                        Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                    }
+                    if (trailingIcon != null) {
+                        Spacer(Modifier.width(8.dp))
+                        trailingIcon()
+                    }
                 }
             },
         )
 
-        // Supporting text row
-        if (supportingText != null || maxLength != null) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-            ) {
-                if (supportingText != null) {
-                    Text(
-                        text = supportingText,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (isError) UgRed else UgMediumGray,
-                        modifier = Modifier.weight(1f),
-                    )
-                } else {
-                    Spacer(Modifier.weight(1f))
-                }
-                if (maxLength != null) {
-                    Text(
-                        text = "${value.length}/$maxLength",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (isError) UgRed else UgMediumGray,
-                    )
-                }
-            }
-        }
+        SupportingTextRow(supportingText, isError, maxLength, value.length)
     }
 }
 
@@ -273,92 +243,96 @@ fun UnigridOutlinedTextField(
             interactionSource = interactionSource,
             modifier = Modifier.fillMaxWidth(),
             decorationBox = { innerTextField ->
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .defaultMinSize(minHeight = 56.dp)
                         .border(borderWidth, borderColor, RoundedCornerShape(2.dp))
                         .background(
                             if (enabled) UgWhite else UgLightGray.copy(alpha = 0.2f),
                             RoundedCornerShape(2.dp),
                         )
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    // Floating label
-                    if (label != null) {
-                        Spacer(Modifier.height(if (labelFloating) 8.dp else 16.dp))
-                        Text(
-                            text = label,
-                            style = if (labelFloating) {
-                                MaterialTheme.typography.bodySmall.copy(color = labelColor)
-                            } else {
-                                MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
-                            },
-                        )
-                        if (labelFloating) Spacer(Modifier.height(4.dp))
-                    } else {
-                        Spacer(Modifier.height(16.dp))
+                    if (leadingIcon != null) {
+                        leadingIcon()
+                        Spacer(Modifier.width(8.dp))
+                    }
+                    if (prefix != null) {
+                        Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                        Spacer(Modifier.width(4.dp))
                     }
 
-                    // Input row
-                    if (label == null || labelFloating) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            if (leadingIcon != null) {
-                                leadingIcon()
-                                Spacer(Modifier.width(8.dp))
-                            }
-                            if (prefix != null) {
-                                Text(prefix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                                Spacer(Modifier.width(4.dp))
-                            }
-                            Box(modifier = Modifier.weight(1f)) {
-                                if (!hasText && placeholder.isNotEmpty()) {
-                                    Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                                }
-                                innerTextField()
-                            }
-                            if (suffix != null) {
-                                Spacer(Modifier.width(4.dp))
-                                Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
-                            }
-                            if (trailingIcon != null) {
-                                Spacer(Modifier.width(8.dp))
-                                trailingIcon()
-                            }
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (label != null) {
+                            Text(
+                                text = label,
+                                style = if (labelFloating) {
+                                    MaterialTheme.typography.bodySmall.copy(color = labelColor)
+                                } else {
+                                    MaterialTheme.typography.bodyMedium.copy(color = UgMediumGray)
+                                },
+                                modifier = Modifier.align(if (labelFloating) Alignment.TopStart else Alignment.CenterStart),
+                            )
                         }
-                    } else {
-                        Box(modifier = Modifier.height(0.dp)) { innerTextField() }
+                        Box(
+                            modifier = Modifier
+                                .align(if (label != null) Alignment.BottomStart else Alignment.CenterStart)
+                                .fillMaxWidth(),
+                        ) {
+                            if (!hasText && placeholder.isNotEmpty() && (label == null || labelFloating)) {
+                                Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                            }
+                            innerTextField()
+                        }
                     }
 
-                    Spacer(Modifier.height(12.dp))
+                    if (suffix != null) {
+                        Spacer(Modifier.width(4.dp))
+                        Text(suffix, style = MaterialTheme.typography.bodyMedium, color = UgMediumGray)
+                    }
+                    if (trailingIcon != null) {
+                        Spacer(Modifier.width(8.dp))
+                        trailingIcon()
+                    }
                 }
             },
         )
 
-        // Supporting text row
-        if (supportingText != null || maxLength != null) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-            ) {
-                if (supportingText != null) {
-                    Text(
-                        text = supportingText,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (isError) UgRed else UgMediumGray,
-                        modifier = Modifier.weight(1f),
-                    )
-                } else {
-                    Spacer(Modifier.weight(1f))
-                }
-                if (maxLength != null) {
-                    Text(
-                        text = "${value.length}/$maxLength",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (isError) UgRed else UgMediumGray,
-                    )
-                }
+        SupportingTextRow(supportingText, isError, maxLength, value.length)
+    }
+}
+
+// --- Supporting text (shared) ---
+
+@Composable
+private fun SupportingTextRow(
+    supportingText: String?,
+    isError: Boolean,
+    maxLength: Int?,
+    currentLength: Int,
+) {
+    if (supportingText != null || maxLength != null) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+        ) {
+            if (supportingText != null) {
+                Text(
+                    text = supportingText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isError) UgRed else UgMediumGray,
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
+                Spacer(Modifier.weight(1f))
+            }
+            if (maxLength != null) {
+                Text(
+                    text = "$currentLength/$maxLength",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isError) UgRed else UgMediumGray,
+                )
             }
         }
     }
