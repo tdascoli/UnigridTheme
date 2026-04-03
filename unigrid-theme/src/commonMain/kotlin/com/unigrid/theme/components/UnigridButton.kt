@@ -252,7 +252,7 @@ fun UnigridSplitButton(
             modifier = Modifier.height(MdHeight),
             enabled = enabled,
             shape = SharpShape,
-            contentPadding = PaddingValues(horizontal = 14.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = color.bg,
                 contentColor = color.fg,
